@@ -51,7 +51,7 @@ def get_available_nights(pdf_path, start_date=9, end_date=21, target_month="Sept
 def create_issue(title, body):
     """Create a GitHub issue for notification"""
     token = os.environ.get('GITHUB_TOKEN')
-    repo = os.environ.get('GITHUB_REPOSITORY', 'user/repo')
+    repo = os.environ.get('GITHUB_REPOSITORY', 'JonasLennie/Rifugio-Checker')
     
     if not token:
         print("No GitHub token found, skipping issue creation")
