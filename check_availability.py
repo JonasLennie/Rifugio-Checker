@@ -65,7 +65,8 @@ def create_issue(title, body):
     data = {
         'title': title,
         'body': body,
-        'labels': ['availability-alert']
+        'labels': ['availability-alert'],
+        'assignees': ['miberl']
     }
     
     response = requests.post(
