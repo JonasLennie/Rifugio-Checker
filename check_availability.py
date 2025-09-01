@@ -51,15 +51,15 @@ def get_available_nights(pdf_path, start_date=9, end_date=21, target_month="Sept
 def create_issue(title, body):
     """Create a GitHub issue for notification"""
     token = os.environ.get('GITHUB_TOKEN')
-    repo = os.environ.get('GITHUB_REPOSITORY', 'JonasLennie/Rifugio-Checker')
     
     if not token:
         print("No GitHub token found, skipping issue creation")
         return
     
     headers = {
-        'Authorization': f'token {token}',
-        'Accept': 'application/vnd.github.v3+json'
+        'Authorization': f'Bearer {token}',  # Changed from 'token' to 'Bearer'
+        'Accept': 'application/vnd.github+json',  # Updated accept header
+        'X-GitHub-Api-Version': '2022-11-28'  # Added version header
     }
     
     data = {
