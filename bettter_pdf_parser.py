@@ -1,6 +1,6 @@
-import pandas as pd
 import pdfplumber
 import numpy as np
+import requests
 
 def get_available_nights(pdf_path, start_date=12, end_date=21, target_month="September"):
     available_nights = []
@@ -47,3 +47,12 @@ def get_available_nights(pdf_path, start_date=12, end_date=21, target_month="Sep
                             continue
     
     return available_nights
+
+url = "https://www.rifugiopiandicengia.it/CustomerData/764/Files/Documents/verfuegbarkeiten.pdf"
+path = 'tmp.pdf'
+response = requests.get(url, timeout=30)
+with open(path, 'wb') as f:
+    f.write(response.content)
+
+result = get_available_nights(path)
+print(result)
