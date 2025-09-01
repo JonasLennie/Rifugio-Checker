@@ -3,7 +3,7 @@ import numpy as np
 import requests
 import os
 
-def get_available_nights(pdf_path, start_date=9, end_date=21, target_month="September"):
+def get_available_nights(pdf_path, start_date=11, end_date=21, target_month="September"):
     available_nights = []
     
     with pdfplumber.open(pdf_path) as pdf:
