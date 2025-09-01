@@ -1,0 +1,90 @@
+name: Rifugio Availability Monitor
+
+on:
+  schedule:
+    # Run every 2 hours during business hours (8 AM - 8 PM CET)
+    - cron: '0 6,8,10,12,14,16,18 * * *'  # UTC times (CET-2)
+  
+  workflow_dispatch:  # Allow manual triggering
+    inputs:
+      force_check:
+        description: 'Force check even if no changes detected'
+        required: false
+        default: 'false'
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Cache Python dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y poppler-utils tesseract-ocr tesseract-ocr-deu tesseract-ocr-eng
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Create data directory
+      run: |
+        mkdir -p data
+        # Ensure data files exist
+        touch data/last_hash.txt
+        echo '{}' > data/availability.json
+    
+    - name: Run availability monitor
+      env:
+        EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+        EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        TARGET_DATES: ${{ secrets.TARGET_DATES || '2025-09-12,2025-09-21' }}
+        FORCE_CHECK: ${{ github.event.inputs.force_check }}
+      run: |
+        cd src
+        python monitor.py
+    
+    - name: Commit and push changes
+      if: success()
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add data/
+        
+        # Only commit if there are changes
+        if ! git diff --staged --quiet; then
+          git commit -m "Update monitoring data - $(date -u '+%Y-%m-%d %H:%M:%S') UTC"
+          git push
+        else
+          echo "No changes to commit"
+        fi
+      continue-on-error: true
+    
+    - name: Upload logs on failure
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: monitor-logs-${{ github.run_number }}
+        path: |
+          monitor.log
+          src/*.log
+        retention-days: 7
