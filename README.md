@@ -167,3 +167,37 @@ pdf:
 ## Support
 
 This is a personal monitoring project. Issues and feature requests welcome via GitHub Issues.
+
+
+
+
+| Juni / Giugno /June   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   |
+|:----------------------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|
+| So                    | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     |
+| 1                     | 2      | 3      | 4      | 5      | 6      | 7      | 8      | 9      | 10     | 11     | 12     | 13     | 14     | 15     | 16     | 17     | 18     | 19     | 20     | 21     | 22     | 23     | 24     | 25     | 26     | 27     | 28     | 29     | 30     |
+|                       |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
+
+
+| Juli / Luglio / July   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   |
+|:-----------------------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|
+| Di                     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     |
+| 1                      | 2      | 3      | 4      | 5      | 6      | 7      | 8      | 9      | 10     | 11     | 12     | 13     | 14     | 15     | 16     | 17     | 18     | 19     | 20     | 21     | 22     | 23     | 24     | 25     | 26     | 27     | 28     | 29     | 30     | 31     |
+|                        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
+
+| August / Agosto   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   |
+|:------------------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|
+| Fr                | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     |
+| 1                 | 2      | 3      | 4      | 5      | 6      | 7      | 8      | 9      | 10     | 11     | 12     | 13     | 14     | 15     | 16     | 17     | 18     | 19     | 20     | 21     | 22     | 23     | 24     | 25     | 26     | 27     | 28     | 29     | 30     | 31     |
+|                   |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |
+
+| September / Settembre   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   |
+|:------------------------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|
+| Mo                      | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     |
+| 1                       | 2      | 3      | 4      | 5      | 6      | 7      | 8      | 9      | 10     | 11     | 12     | 13     | 14     | 15     | 16     | 17     | 18     | 19     | 20     | 21     | 22     | 23     | 24     | 25     | 26     | 27     | 28     | 29     | 30     |
+|                         |        |        |        |        |        |        |        |        |        | 1      |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        | 1      |        |        |        |
+
+| Oktober / Ottobre   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   | None   |
+|:--------------------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|:-------|
+| Mi                  | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     | Sa     | So     | Mo     | Di     | Mi     | Do     | Fr     |
+| 1                   | 2      | 3      | 4      | 5      | 6      | 7      | 8      | 9      | 10     | 11     | 12     | 13     | 14     | 15     | 16     | 17     | 18     | 19     | 20     | 21     | 22     | 23     | 24     | 25     | 26     | 27     | 28     | 29     | 30     | 31     |
+|                     |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |        |

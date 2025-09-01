@@ -15,10 +15,10 @@ install-dev:  ## Install development dependencies
 	@echo "✅ Development dependencies installed"
 
 test:  ## Run tests
-	pytest tests/ -v
+	pytest tests -v
 
 test-cov:  ## Run tests with coverage
-	pytest tests/ -v --cov=src --cov-report=term-missing --cov-report=html
+	pytest tests -v --cov=src --cov-report=term-missing --cov-report=html
 
 lint:  ## Run linting
 	flake8 src/ tests/

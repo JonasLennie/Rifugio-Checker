@@ -7,27 +7,27 @@ import os
 import sys
 import hashlib
 import logging
+import json
 from datetime import datetime
 from pathlib import Path
 
 import requests
-from pdf_analyzer import PDFAnalyzer
+sys.path.append('..')
+from bettter_pdf_parser import get_available_nights
 from notifier import EmailNotifier
 
 
 class PDFMonitor:
-    def __init__(self, config_path="config/settings.yml"):
+    def __init__(self):
         self.setup_logging()
         self.pdf_url = "https://www.rifugiopiandicengia.it/CustomerData/764/Files/Documents/verfuegbarkeiten.pdf"
         self.hash_file = Path("data/last_hash.txt")
-        self.availability_file = Path("data/availability.json")
+        self.availability_file = Path("data/availability_count.json")
         
-        self.target_dates = os.getenv("TARGET_DATES", "2025-09-12,2025-09-21").split(",")
         self.email_from = os.getenv("EMAIL_FROM")
         self.email_to = os.getenv("EMAIL_TO") 
         self.email_password = os.getenv("EMAIL_PASSWORD")
         
-        self.analyzer = PDFAnalyzer()
         self.notifier = EmailNotifier(self.email_from, self.email_to, self.email_password)
         
     def setup_logging(self):
@@ -67,6 +67,28 @@ class PDFMonitor:
         self.hash_file.parent.mkdir(parents=True, exist_ok=True)
         self.hash_file.write_text(hash_value)
     
+    def get_stored_count(self):
+        """Get previously stored available nights count"""
+        if self.availability_file.exists():
+            try:
+                with open(self.availability_file, 'r') as f:
+                    data = json.load(f)
+                    return data.get('count', 0)
+            except:
+                return 0
+        return 0
+    
+    def store_count(self, count, nights):
+        """Store available nights count and list"""
+        self.availability_file.parent.mkdir(parents=True, exist_ok=True)
+        data = {
+            'count': count,
+            'nights': nights,
+            'timestamp': datetime.now().isoformat()
+        }
+        with open(self.availability_file, 'w') as f:
+            json.dump(data, f, indent=2)
+
     def check_for_changes(self):
         """Main monitoring logic"""
         try:
@@ -78,26 +100,41 @@ class PDFMonitor:
             self.logger.info(f"Current hash: {current_hash}")
             self.logger.info(f"Stored hash: {stored_hash}")
             
-            # Check if PDF has changed
-            if current_hash == stored_hash:
-                self.logger.info("No changes detected in PDF")
-                return False
-            
-            self.logger.info("PDF change detected!")
-            
             # Save PDF temporarily for analysis
             temp_pdf_path = "temp_calendar.pdf"
             with open(temp_pdf_path, 'wb') as f:
                 f.write(pdf_content)
             
-            # Analyze availability for target dates
-            availability_data = self.analyzer.analyze_availability(temp_pdf_path, self.target_dates)
+            # Get available nights using new parser
+            available_nights = get_available_nights(temp_pdf_path)
+            current_count = len(available_nights)
+            stored_count = self.get_stored_count()
+            
+            self.logger.info(f"Available nights found: {current_count}")
+            self.logger.info(f"Previously stored count: {stored_count}")
+            
+            # Check if PDF has changed OR if we have more available nights
+            pdf_changed = current_hash != stored_hash
+            more_nights_available = current_count > stored_count
+            
+            if not pdf_changed and not more_nights_available:
+                self.logger.info("No changes detected and no increase in available nights")
+                os.remove(temp_pdf_path)
+                return False
+            
+            if pdf_changed:
+                self.logger.info("PDF change detected!")
+            if more_nights_available:
+                self.logger.info(f"More available nights detected! ({stored_count} -> {current_count})")
             
             # Send notification
-            self.notifier.send_change_notification(availability_data, current_hash, stored_hash)
+            self.notifier.send_availability_notification(
+                available_nights, current_count, stored_count, pdf_changed
+            )
             
-            # Update stored hash
+            # Update stored data
             self.store_hash(current_hash)
+            self.store_count(current_count, available_nights)
             
             # Clean up temp file
             os.remove(temp_pdf_path)
@@ -106,7 +143,6 @@ class PDFMonitor:
             
         except Exception as e:
             self.logger.error(f"Error during monitoring: {e}")
-            # Send error notification
             self.notifier.send_error_notification(str(e))
             return False
 
@@ -116,13 +152,12 @@ def main():
     monitor = PDFMonitor()
     
     print("Starting PDF Availability Monitor...")
-    print(f"Target dates: {monitor.target_dates}")
     print(f"PDF URL: {monitor.pdf_url}")
     
     try:
         changed = monitor.check_for_changes()
         if changed:
-            print("✅ PDF changes detected and processed")
+            print("✅ Changes detected and processed")
         else:
             print("ℹ️  No changes detected")
     except Exception as e:
