@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 PDF Analyzer - Multi-method PDF availability analysis
 Implements hybrid approach: text extraction, image analysis, and OCR

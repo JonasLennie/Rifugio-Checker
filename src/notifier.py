@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Email Notification System
 Handles email notifications for PDF changes and availability updates

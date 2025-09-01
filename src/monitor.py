@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 PDF Availability Monitor - Main monitoring script
 Monitors refuge PDF availability calendar for changes and availability status
