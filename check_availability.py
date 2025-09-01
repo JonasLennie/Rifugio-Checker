@@ -79,6 +79,7 @@ def create_issue(title, body):
         print(f"Issue created: {response.json()['html_url']}")
     else:
         print(f"Failed to create issue: {response.status_code}")
+        print(f"Response: {response.text}")
 
 def main():
     url = "https://www.rifugiopiandicengia.it/CustomerData/764/Files/Documents/verfuegbarkeiten.pdf"
