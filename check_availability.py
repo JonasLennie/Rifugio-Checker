@@ -70,7 +70,7 @@ def create_issue(title, body):
     }
     
     response = requests.post(
-        f'https://api.github.com/repos/{repo}/issues',
+        f'https://api.github.com/repos/JonasLennie/Rifugio-Checker/issues',
         headers=headers,
         json=data
     )
