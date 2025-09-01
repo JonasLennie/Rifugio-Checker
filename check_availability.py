@@ -1,7 +1,6 @@
 import pdfplumber
 import numpy as np
 import requests
-import json
 import os
 
 def get_available_nights(pdf_path, start_date=9, end_date=21, target_month="September"):
@@ -48,6 +47,42 @@ def get_available_nights(pdf_path, start_date=9, end_date=21, target_month="Sept
     
     return available_nights
 
+def get_open_issues():
+    """Get all open issues with availability-alert label"""
+    token = os.environ.get('GITHUB_TOKEN')
+    
+    if not token:
+        print("No GitHub token found, cannot check existing issues")
+        return []
+    
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+    }
+    
+    response = requests.get(
+        f'https://api.github.com/repos/JonasLennie/Rifugio-Checker/issues?labels=availability-alert&state=open',
+        headers=headers
+    )
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"Failed to get issues: {response.status_code}")
+        return []
+
+def extract_nights_from_issues(issues):
+    """Extract nights mentioned in existing issue titles"""
+    existing_nights = []
+    for issue in issues:
+        title = issue['title']
+        # Look for nights in format "Wed 11 September" in the title
+        import re
+        nights = re.findall(r'[A-Za-z]+ \d+ [A-Za-z]+', title)
+        existing_nights.extend(nights)
+    return existing_nights
+
 def create_issue(title, body):
     """Create a GitHub issue for notification"""
     token = os.environ.get('GITHUB_TOKEN')
@@ -84,7 +119,6 @@ def create_issue(title, body):
 def main():
     url = "https://www.rifugiopiandicengia.it/CustomerData/764/Files/Documents/verfuegbarkeiten.pdf"
     pdf_path = 'tmp.pdf'
-    state_file = 'last_availability.json'
     
     # Download PDF
     response = requests.get(url, timeout=30)
@@ -95,17 +129,19 @@ def main():
     current_availability = get_available_nights(pdf_path)
     print(f"Current availability: {current_availability}")
     
-    # Load previous state
-    previous_availability = []
-    if os.path.exists(state_file):
-        with open(state_file, 'r') as f:
-            previous_availability = json.load(f)
+    # Get existing issues and extract nights already reported
+    open_issues = get_open_issues()
+    previous_availability = extract_nights_from_issues(open_issues)
+    print(f"Previously reported nights: {previous_availability}")
     
     # Check for new availability
     new_nights = [night for night in current_availability if night not in previous_availability]
     
     if new_nights:
-        title = "🏔️ New Rifugio Availability!"
+        # Create title with specific nights
+        nights_str = ', '.join(new_nights)
+        title = f"🏔️ New Rifugio Availability: {nights_str}"
+        
         body = f"""New availability detected:
 
 **New nights available:**
@@ -114,16 +150,14 @@ def main():
 **All currently available nights:**
 {chr(10).join(f'• {night}' for night in current_availability)}
 
+**PDF Source:** {url}
+
 Check the rifugio website for booking: https://www.rifugiopiandicengia.it/"""
         
         create_issue(title, body)
         print(f"New availability found: {new_nights}")
     else:
         print("No new availability")
-    
-    # Save current state
-    with open(state_file, 'w') as f:
-        json.dump(current_availability, f)
     
     # Clean up
     if os.path.exists(pdf_path):
