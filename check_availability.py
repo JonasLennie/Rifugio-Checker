@@ -75,13 +75,20 @@ def get_open_issues():
 def extract_nights_from_issues(issues):
     """Extract nights mentioned in existing issue titles"""
     existing_nights = []
+    night_to_issue = {}  # Map nights to issue numbers for closing
+    
     for issue in issues:
         title = issue['title']
         # Look for nights in format "Wed 11 September" in the title
         import re
         nights = re.findall(r'[A-Za-z]+ \d+ [A-Za-z]+', title)
         existing_nights.extend(nights)
-    return existing_nights
+        
+        # Map each night to its issue number for potential closure
+        for night in nights:
+            night_to_issue[night] = issue['number']
+    
+    return existing_nights, night_to_issue
 
 def create_issue(title, body):
     """Create a GitHub issue for notification"""
@@ -116,6 +123,50 @@ def create_issue(title, body):
         print(f"Failed to create issue: {response.status_code}")
         print(f"Response: {response.text}")
 
+def close_issue(issue_number, reason):
+    """Close a GitHub issue when availability is no longer present"""
+    token = os.environ.get('GITHUB_TOKEN')
+    
+    if not token:
+        print("No GitHub token found, skipping issue closure")
+        return
+    
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28'
+    }
+    
+    # Add a comment explaining why the issue is being closed
+    comment_data = {
+        'body': f"🔒 Automatically closing this issue because {reason}\n\nThis issue will be reopened automatically if availability returns."
+    }
+    
+    # Post comment
+    comment_response = requests.post(
+        f'https://api.github.com/repos/JonasLennie/Rifugio-Checker/issues/{issue_number}/comments',
+        headers=headers,
+        json=comment_data
+    )
+    
+    # Close the issue
+    close_data = {
+        'state': 'closed',
+        'state_reason': 'completed'
+    }
+    
+    response = requests.patch(
+        f'https://api.github.com/repos/JonasLennie/Rifugio-Checker/issues/{issue_number}',
+        headers=headers,
+        json=close_data
+    )
+    
+    if response.status_code == 200:
+        print(f"Issue #{issue_number} closed: {reason}")
+    else:
+        print(f"Failed to close issue #{issue_number}: {response.status_code}")
+        print(f"Response: {response.text}")
+
 def main():
     url = "https://www.rifugiopiandicengia.it/CustomerData/764/Files/Documents/verfuegbarkeiten.pdf"
     pdf_path = 'tmp.pdf'
@@ -131,12 +182,22 @@ def main():
     
     # Get existing issues and extract nights already reported
     open_issues = get_open_issues()
-    previous_availability = extract_nights_from_issues(open_issues)
+    previous_availability, night_to_issue = extract_nights_from_issues(open_issues)
     print(f"Previously reported nights: {previous_availability}")
     
     # Check for new availability
     new_nights = [night for night in current_availability if night not in previous_availability]
     
+    # Check for nights that are no longer available (should close issues)
+    unavailable_nights = [night for night in previous_availability if night not in current_availability]
+    
+    # Close issues for nights that are no longer available
+    for night in unavailable_nights:
+        issue_number = night_to_issue[night]
+        reason = f"the night {night} is no longer available according to the latest PDF."
+        close_issue(issue_number, reason)
+    
+    # Create new issues for newly available nights
     if new_nights:
         # Create title with specific nights
         nights_str = ', '.join(new_nights)
@@ -158,6 +219,9 @@ Check the rifugio website for booking: https://www.rifugiopiandicengia.it/"""
         print(f"New availability found: {new_nights}")
     else:
         print("No new availability")
+    
+    if unavailable_nights:
+        print(f"Closed issues for unavailable nights: {unavailable_nights}")
     
     # Clean up
     if os.path.exists(pdf_path):
